@@ -10,4 +10,9 @@ specs.load()
 
 prices = root.marketPrices.href
 prices.load()
-#print prices
+
+# you need to do it this way because items is a method on the collection class
+for item in prices['items']:
+  if item.type.id == 29668:
+    print "The price of PLEX is too damn high: {:,} ISK".format(item.averagePrice)
+
