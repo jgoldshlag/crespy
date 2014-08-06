@@ -1,4 +1,5 @@
 import urllib2
+import urllib
 import json
 import collections
 import pprint
@@ -18,11 +19,14 @@ class CrespyObj(collections.MutableMapping):
     self._url = None
     self._loaded = False
   
-  def load(self):
+  def load(self, post_data=None):
     url = self._url
     if url is None:
       url = base_url
-    req = urllib2.Request(url=url, headers=self._headers)
+    encoded_post_data = None
+    if post_data is not None and isinstance(post_data,dict):
+      encoded_post_data = urllib.urlencode(post_data)
+    req = urllib2.Request(url=url, headers=self._headers, data=encoded_post_data)
     f = urllib2.urlopen(req)
     self._data = json.loads(f.read(), object_hook=crespy_hook)._data
     self._loaded = True
@@ -56,7 +60,9 @@ class CrespyObj(collections.MutableMapping):
     else:
       return None
 
-def get_crest_root():
+def get_crest_root(user_agent=None):
   r = CrespyObj()
+  if user_agent is not None:
+    r._headers['User-Agent'] = user_agent
   r.load()
   return r

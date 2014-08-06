@@ -1,6 +1,7 @@
 from crespy import get_crest_root
 
-root = get_crest_root()
+# this should be changed to uniquely identify your application
+root = get_crest_root('crespy-sample')
 
 print root
 
