@@ -60,9 +60,8 @@ class CrespyObj(collections.MutableMapping):
     else:
       return None
 
-def get_crest_root(user_agent=None):
+def get_crest_root(user_agent):
   r = CrespyObj()
-  if user_agent is not None:
-    r._headers['User-Agent'] = user_agent
+  r._headers['User-Agent'] = user_agent
   r.load()
   return r
