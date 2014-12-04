@@ -38,7 +38,9 @@ class CrespyObj(collections.MutableMapping):
       child._headers = self._headers
       return child
     else:
-      return self._data[unicode(key)]
+      child = self._data[unicode(key)]
+      child._headers = self._headers
+      return child
   def __setitem__(self, key, value):
     pass
   def __delitem__(self, key):
