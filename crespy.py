@@ -3,12 +3,15 @@ import urllib
 import json
 import collections
 import pprint
+from functools import partial
 
 base_url = "http://public-crest.eveonline.com/"
 
-def crespy_hook(dct):
+def crespy_hook(headers, dct):
   if isinstance(dct,dict):
-    return CrespyObj(dct)
+    obj = CrespyObj(dct)
+    obj._headers = headers
+    return obj
   else:
     return dct
 
@@ -28,18 +31,16 @@ class CrespyObj(collections.MutableMapping):
       encoded_post_data = urllib.urlencode(post_data)
     req = urllib2.Request(url=url, headers=self._headers, data=encoded_post_data)
     f = urllib2.urlopen(req)
-    self._data = json.loads(f.read(), object_hook=crespy_hook)._data
+    self._data = json.loads(f.read(), object_hook=partial(crespy_hook, self._headers))._data
     self._loaded = True
     
   def __getitem__(self,key):
     if key == u"href":
       child = CrespyObj()
       child._url = self._data[key]
-      child._headers = self._headers
       return child
     else:
       child = self._data[unicode(key)]
-      child._headers = self._headers
       return child
   def __setitem__(self, key, value):
     pass
